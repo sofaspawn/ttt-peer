@@ -72,6 +72,12 @@ body {
     padding: 0.1;
 }
 
+.reset {
+    background: #fff;
+    font-weight: bold;
+    padding: 0.1;
+}
+
 .square {
   background: #fff;
   border: 1px solid #999;

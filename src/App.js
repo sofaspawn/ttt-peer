@@ -30,6 +30,8 @@ export default function Board() {
     const [turn, setTurn] = useState('X');
     const [squares, setSquares] = useState(Array(9).fill(null));
     const [winner, setWinner] = useState(null);
+    const [XScore, setXScore] = useState(0);
+    const [OScore, setOScore] = useState(0);
 
     function handleClick(i){
         if (squares[i] || winner) return;
@@ -39,6 +41,12 @@ export default function Board() {
 
         let [someWin, whoWin] = checkWinner(nextSquares);
         if(someWin){
+            if(whoWin==='X'){
+                setXScore(score => score + 1);
+            }
+            if(whoWin==='O'){
+                setOScore(score => score + 1);
+            }
             setWinner(whoWin);
         } else {
             setTurn(turn === 'X' ? 'O' : 'X');
@@ -51,6 +59,11 @@ export default function Board() {
         const nextSquares = Array(9).fill(null);
         setWinner(null);
         setSquares(nextSquares);
+    }
+
+    function handleReset(){
+        setXScore(0)
+        setOScore(0)
     }
 
     return (<>
@@ -71,6 +84,23 @@ export default function Board() {
             <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
             <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
         </div>
+        <div>
         <button className="clear" onClick={handleClear}>clear</button>
+        <button className="reset" onClick={handleReset}>reset</button>
+        </div>
+        <table style={{ width: '25%', borderCollapse: 'collapse' }}>
+        <thead>
+        <tr>
+        <th style={{ border: '1px solid #ddd', padding: '8px' }}>X</th>
+        <th style={{ border: '1px solid #ddd', padding: '8px' }}>O</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{XScore}</td>
+        <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{OScore}</td>
+        </tr>
+        </tbody>
+        </table>
         </>)
 }
