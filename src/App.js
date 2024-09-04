@@ -6,46 +6,56 @@ function Square({value, onSquareClick}){
 }
 
 function checkWinner(squares){
-    for (let i=0; i<squares.length; i++){
+    const lines = [
+        [0, 1, 2], // Top row
+        [3, 4, 5], // Middle row
+        [6, 7, 8], // Bottom row
+        [0, 3, 6], // Left column
+        [1, 4, 7], // Middle column
+        [2, 5, 8], // Right column
+        [0, 4, 8], // Diagonal
+        [2, 4, 6]  // Diagonal
+    ];
+    
+    for (let [a, b, c] of lines) {
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+            return [true, squares[a]];
+        }
     }
+    return [false, null];
 }
 
 export default function Board() {
 
     const [turn, setTurn] = useState('X');
     const [squares, setSquares] = useState(Array(9).fill(null));
+    const [winner, setWinner] = useState(null);
 
     function handleClick(i){
+        if (squares[i] || winner) return;
+
         const nextSquares = squares.slice();
+        nextSquares[i] = turn
 
-        if (!nextSquares.includes(null)){
-            checkWinner(nextSquares);
-            return
-        }
-
-        if (nextSquares[i]==null){
-            if (turn=='X'){
-                nextSquares[i] = 'X';
-                setTurn('O');
-            } else if (turn=='O'){
-                nextSquares[i] = 'O';
-                setTurn('X');
-            }
+        let [someWin, whoWin] = checkWinner(nextSquares);
+        if(someWin){
+            setWinner(whoWin);
+        } else {
+            setTurn(turn === 'X' ? 'O' : 'X');
         }
 
         setSquares(nextSquares);
     }
 
     function handleClear(){
-        const nextSquares = squares.slice();
-        for (let i=0; i<nextSquares.length; i++){
-            nextSquares[i] = null;
-        }
+        const nextSquares = Array(9).fill(null);
+        setWinner(null);
         setSquares(nextSquares);
     }
 
     return (<>
         <button className="clear" onClick={handleClear}>clear</button>
+        <p>winner: {winner}</p>
         <div className="board-row">
             <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
             <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
