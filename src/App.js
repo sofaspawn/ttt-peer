@@ -1,4 +1,7 @@
 import { useState } from "react";
+import {Peer} from "https://esm.sh/peerjs@1.5.4?bundle-deps"
+
+var peer = new Peer();
 
 function Square({value, onSquareClick}){
     return <button className="square"
@@ -66,7 +69,17 @@ export default function Board() {
         setOScore(0)
     }
 
+    let [peerid, setPeerId ] =useState(null);
+
+    function genPeer(){
+        peer.on('open', function(id) {
+            setPeerId(id);
+            console.log(peerid)
+        });
+    }
+
     return (<>
+        <h6 onLoad={genPeer()}>peer-id: {peerid}</h6>
         <p>winner: {winner}</p>
         <p>turn: {turn}</p>
         <div className="board-row">
