@@ -54,8 +54,8 @@ export default function Board() {
     }
 
     return (<>
-        <button className="clear" onClick={handleClear}>clear</button>
         <p>winner: {winner}</p>
+        <p>turn: {turn}</p>
         <div className="board-row">
             <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
             <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
@@ -71,6 +71,6 @@ export default function Board() {
             <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
             <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
         </div>
+        <button className="clear" onClick={handleClear}>clear</button>
         </>)
 }
-

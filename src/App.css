@@ -38,6 +38,16 @@ h6 {
   font-size: 12px;
 }
 
+p {
+  margin-top: 0;
+  font-size: 12px;
+  font-weight: bold;
+  border: 2px solid black; 
+  padding: 10px;
+  margin: 10px 0;
+  display: inline-block;
+}
+
 code {
   font-size: 1.2em;
 }
