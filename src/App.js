@@ -69,17 +69,33 @@ export default function Board() {
         setOScore(0)
     }
 
-    let [peerid, setPeerId ] =useState(null);
+    let [peerid, setPeerId ] = useState(null);
 
     function genPeer(){
         peer.on('open', function(id) {
             setPeerId(id);
-            console.log(peerid)
         });
+    }
+
+    let [submitPeerId, setSubmitPeerId] = useState("");
+
+    const handleChange = (event) => {
+        //console.log(event.target.value);
+        setSubmitPeerId(event.target.value);
+    }
+
+    const handleSubmit = (event) => {
+        //event.preventDefaault();
+        console.log(submitPeerId);
     }
 
     return (<>
         <h6 onLoad={genPeer()}>peer-id: {peerid}</h6>
+        <form onSubmit={handleSubmit}>
+        <input type='form' placeholder="enter peer id" value={submitPeerId} onChange={handleChange}></input>
+        <button className="submit">submit</button>
+        </form>
+        <hr></hr>
         <p>winner: {winner}</p>
         <p>turn: {turn}</p>
         <div className="board-row">
