@@ -69,7 +69,7 @@ export default function Board() {
         setOScore(0)
     }
 
-    let [peerid, setPeerId ] = useState(null);
+    let [peerId, setPeerId ] = useState(null);
 
     function genPeer(){
         peer.on('open', function(id) {
@@ -77,24 +77,33 @@ export default function Board() {
         });
     }
 
-    let [submitPeerId, setSubmitPeerId] = useState("");
+    let [remotePeerId, setRemotePeerId] = useState("")
 
     const handleChange = (event) => {
         //console.log(event.target.value);
-        setSubmitPeerId(event.target.value);
+        setRemotePeerId(event.target.value);
     }
 
     const handleSubmit = (event) => {
-        //event.preventDefaault();
-        console.log(submitPeerId);
+        event.preventDefault();
+        let conn = peer.connect(remotePeerId);
+        console.log(conn);
+        //console.log('Submitted remote peer id: ', remotePeerId);
     }
 
+    peer.on('connection', function(conn) {
+        console.log(conn);
+    });
+
+
     return (<>
-        <h6 onLoad={genPeer()}>peer-id: {peerid}</h6>
-        <form onSubmit={handleSubmit}>
-        <input type='form' placeholder="enter peer id" value={submitPeerId} onChange={handleChange}></input>
-        <button className="submit">submit</button>
-        </form>
+        <h6 onLoad={genPeer()}>peer-id: {peerId}</h6>
+        <div>
+            <form onSubmit={handleSubmit}>
+                <input type='text' value={remotePeerId} onChange={handleChange} placeholder="remote peer id"></input>
+                <button className="submit" type="submit">submit</button>
+            </form>
+        </div>
         <hr></hr>
         <p>winner: {winner}</p>
         <p>turn: {turn}</p>
@@ -114,22 +123,22 @@ export default function Board() {
             <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
         </div>
         <div>
-        <button className="clear" onClick={handleClear}>clear</button>
-        <button className="reset" onClick={handleReset}>reset</button>
+            <button className="clear" onClick={handleClear}>clear</button>
+            <button className="reset" onClick={handleReset}>reset</button>
         </div>
         <table style={{ width: '25%', borderCollapse: 'collapse' }}>
-        <thead>
-        <tr>
-        <th style={{ border: '1px solid #ddd', padding: '8px' }}>X</th>
-        <th style={{ border: '1px solid #ddd', padding: '8px' }}>O</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-        <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{XScore}</td>
-        <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{OScore}</td>
-        </tr>
-        </tbody>
+            <thead>
+                <tr>
+                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>X</th>
+                    <th style={{ border: '1px solid #ddd', padding: '8px' }}>O</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{XScore}</td>
+                    <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{OScore}</td>
+                </tr>
+            </tbody>
         </table>
-        </>)
+    </>)
 }
