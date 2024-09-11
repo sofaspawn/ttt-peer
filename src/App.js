@@ -31,7 +31,6 @@ function checkWinner(squares){
         [0, 4, 8], 
         [2, 4, 6]  
     ];
-    
     for (let [a, b, c] of lines) {
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
             return [true, squares[a]];
@@ -98,11 +97,17 @@ export default function Board() {
     function handleSubmit(event){
 	event.preventDefault();
 	console.log("value submitted succesfully: ", remotePeerId);
-
 	let conn = peer.connect(remotePeerId);
+	let boardData = [
+	    turn,
+	    squares,
+	    winner,
+	    XScore,
+	    OScore
+	];
 	conn.on('open', function(){
 	    console.log("successful");
-	    conn.send('Hello!');
+	    conn.send(boardData);
 	});
     }
 
