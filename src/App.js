@@ -7,14 +7,6 @@ peer.on('open', function(id) {
     console.log("my id: ", id);
 });
 
-peer.on('connection', function(conn){
-    console.log("connection peer id: ", conn.peer);
-    conn.on('data', function(data){
-	console.log("data received: ", data);
-    });
-});
-
-
 function Square({value, onSquareClick}){
     return <button className="square"
         onClick={onSquareClick}>{value}</button>;
@@ -40,6 +32,14 @@ function checkWinner(squares){
 }
 
 export default function Board() {
+    peer.on('connection', function(conn){
+	console.log("connection peer id: ", conn.peer);
+	conn.on('data', function(data){
+	    console.log("data received: ", data);
+	    console.log(data.squares);
+	});
+    });
+
     const [turn, setTurn] = useState('X');
     const [squares, setSquares] = useState(Array(9).fill(null));
     const [winner, setWinner] = useState(null);
@@ -64,19 +64,21 @@ export default function Board() {
         } else {
             setTurn(turn === 'X' ? 'O' : 'X');
         }
-
         setSquares(nextSquares);
+	sendData();
     }
 
     function handleClear(){
         const nextSquares = Array(9).fill(null);
         setWinner(null);
         setSquares(nextSquares);
+	sendData();
     }
 
     function handleReset(){
         setXScore(0)
         setOScore(0)
+	sendData();
     }
 
     let [peerId, setPeerId] = useState(null);
@@ -94,20 +96,28 @@ export default function Board() {
 	//console.log(val);
     }
 
-    function handleSubmit(event){
-	event.preventDefault();
-	console.log("value submitted succesfully: ", remotePeerId);
+    function sendData(){
 	let conn = peer.connect(remotePeerId);
-	let boardData = [
-	    turn,
-	    squares,
-	    winner,
-	    XScore,
-	    OScore
-	];
+	let boardData = {
+	    turn: turn,
+	    squares: squares,
+	    winner: winner,
+	    XScore: XScore,
+	    OScore: OScore
+	};
 	conn.on('open', function(){
 	    console.log("successful");
 	    conn.send(boardData);
+	});
+	return conn;
+    }
+
+    function handleSubmit(event){
+	event.preventDefault();
+	console.log("value submitted succesfully: ", remotePeerId);
+	let conn = sendData();
+	conn.on('data', (data)=>{
+	    console.log(data);
 	});
     }
 
